@@ -1,0 +1,13 @@
+name = "sleeper-mcp"
+main = "src/index.ts"
+compatibility_date = "2026-09-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+SLEEPER_USERNAME = ""
+SLEEPER_LEAGUE_ID = ""
+SLEEPER_SEASON = "2026"
+
+[[kv_namespaces]]
+binding = "CACHE"
+id = "REPLACE_WITH_KV_NAMESPACE_ID"
