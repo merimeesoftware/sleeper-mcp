@@ -45,7 +45,7 @@ Same path as porkbun-mcp: connect this GitHub repo on the Worker. Cloudflare dep
 | Build command | *(empty)* |
 | Deploy command | `npx wrangler deploy` |
 
-Leave the API token on the default Cloudflare-generated Builds token. Runtime secrets stay on **Settings → Variables and Secrets**, not in GitHub.
+Leave the API token on the default Cloudflare-generated Builds token. Runtime identity stays on **Settings → Variables and Secrets** as **encrypted secrets**, not in GitHub and not in `[vars]`. Empty `SLEEPER_USERNAME` / `SLEEPER_LEAGUE_ID` in `wrangler.toml` overwrite secrets of the same name on deploy.
 
 First-time KV (already done for merimeesoftware):
 
