@@ -30,10 +30,26 @@ Free agents are computed here (NFL player map minus every rostered ID). Do not r
 | `get_traded_picks` | Future pick movement |
 | `find_trade_fits` | Position counts per team |
 
-## Deploy (Cloudflare Workers)
+## Deploy (Cloudflare Workers Builds)
+
+Same path as porkbun-mcp: connect this GitHub repo on the Worker. Cloudflare deploys on push. No GitHub `CLOUDFLARE_API_TOKEN`.
+
+**Workers & Pages → `sleeper-mcp` → Settings → Build → Connect:**
+
+| Setting | Value |
+|---------|-------|
+| Git account | `merimeesoftware` |
+| Repository | `sleeper-mcp` |
+| Production branch | `main` |
+| Enable Preview builds | on |
+| Build command | *(empty)* |
+| Deploy command | `npx wrangler deploy` |
+
+Leave the API token on the default Cloudflare-generated Builds token. Runtime secrets stay on **Settings → Variables and Secrets**, not in GitHub.
+
+First-time KV (already done for merimeesoftware):
 
 ```bash
-npm install
 npx wrangler kv namespace create sleeper-mcp-cache
 ```
 
@@ -48,6 +64,8 @@ npx wrangler secret put SLEEPER_LEAGUE_ID
 
 League ID is the number in `https://sleeper.com/leagues/<id>/...`.
 
+Manual deploy from a logged-in machine:
+
 ```bash
 npm run deploy
 ```
@@ -60,7 +78,9 @@ https://sleeper-mcp.<your-subdomain>.workers.dev/mcp
 
 ## Connect
 
-**Grok:** grok.com → Connectors → New → Custom → paste `/mcp` URL.
+**Grok:** grok.com → Connectors → New → Custom → paste the **full** `/mcp` URL, including `https://`. The field can crop the left side (`leeper-mcp...`); confirm the stored value is not missing `https://` before Add.
+
+Streamable HTTP is POST-only. `GET /mcp` returns **405** immediately (`Allow: POST`) so clients that probe SSE do not hang.
 
 **Cursor** (`.cursor/mcp.json`):
 

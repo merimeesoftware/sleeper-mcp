@@ -42,7 +42,8 @@ N/A — data plane only.
 
 ## 7. CI/CD
 
-- GitHub Actions: none yet (deploy is `wrangler deploy` from the owner)
+- GitHub Actions: `ci.yml` typechecks only
+- Deploy: Cloudflare Workers Builds (GitHub `main` → `npx wrangler deploy`). Same as porkbun-mcp. No GitHub API token.
 
 ## 8. MCP servers & skills in use
 
@@ -64,5 +65,5 @@ wrangler.toml     Worker + KV binding
 
 | Area | Current | Target | Priority to fix |
 |------|---------|--------|-----------------|
-| CI | none | Actions wrangler deploy | low |
+| CI | Workers Builds on `main` | same | none |
 | Custom domain | workers.dev | optional later | none |

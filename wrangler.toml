@@ -3,6 +3,10 @@ main = "src/index.ts"
 compatibility_date = "2026-09-01"
 compatibility_flags = ["nodejs_compat"]
 
+# Optional agents peer; not used at runtime. Lets Wrangler resolve a dynamic import.
+[alias]
+ai = "./src/ai-stub.ts"
+
 [vars]
 SLEEPER_USERNAME = ""
 SLEEPER_LEAGUE_ID = ""
@@ -10,4 +14,4 @@ SLEEPER_SEASON = "2026"
 
 [[kv_namespaces]]
 binding = "CACHE"
-id = "REPLACE_WITH_KV_NAMESPACE_ID"
+id = "778341e3af63486bad7ca1cc970fbd8b"
