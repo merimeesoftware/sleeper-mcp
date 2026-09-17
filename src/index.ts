@@ -57,7 +57,8 @@ function createServer(env: Env) {
       const uname = username || env.SLEEPER_USERNAME;
       if (!uname) throw new Error("Pass username or set SLEEPER_USERNAME.");
       const user = await getUser(uname);
-      const leagues = await getUserLeagues(user.user_id, season || env.SLEEPER_SEASON || "2026");
+      const year = season || (await getNflState()).season;
+      const leagues = await getUserLeagues(user.user_id, year);
       return text({ user, leagues });
     },
   );
