@@ -7,11 +7,9 @@ compatibility_flags = ["nodejs_compat"]
 [alias]
 ai = "./src/ai-stub.ts"
 
-# Do not put SLEEPER_USERNAME / SLEEPER_LEAGUE_ID here — even as "".
-# Empty [vars] overwrite Worker secrets of the same name on deploy.
-# Set those as encrypted secrets (dashboard or `wrangler secret put`).
-[vars]
-SLEEPER_SEASON = "2026"
+# Identity (SLEEPER_USERNAME, SLEEPER_LEAGUE_ID) is encrypted Worker secrets only.
+# Do not add them under [vars], even as "". Empty vars overwrite secrets on deploy.
+# Season comes from Sleeper's NFL state, not config.
 
 [[kv_namespaces]]
 binding = "CACHE"

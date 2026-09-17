@@ -4,9 +4,8 @@ const PLAYERS_TTL = 60 * 60 * 24;
 
 export type Env = {
   CACHE: KVNamespace;
-  SLEEPER_USERNAME: string;
-  SLEEPER_LEAGUE_ID: string;
-  SLEEPER_SEASON: string;
+  SLEEPER_USERNAME?: string;
+  SLEEPER_LEAGUE_ID?: string;
 };
 
 export type SleeperPlayer = {
