@@ -30,14 +30,30 @@ Free agents are computed here (NFL player map minus every rostered ID). Do not r
 | `get_traded_picks` | Future pick movement |
 | `find_trade_fits` | Position counts per team |
 
-## Deploy (Cloudflare Workers)
+## Deploy (Cloudflare Workers Builds)
+
+Same path as porkbun-mcp: connect this GitHub repo on the Worker. Cloudflare deploys on push. No GitHub `CLOUDFLARE_API_TOKEN`.
+
+**Workers & Pages → `sleeper-mcp` → Settings → Build → Connect:**
+
+| Setting | Value |
+|---------|-------|
+| Git account | `merimeesoftware` |
+| Repository | `sleeper-mcp` |
+| Production branch | `main` |
+| Enable Preview builds | on |
+| Build command | *(empty)* |
+| Deploy command | `npx wrangler deploy` |
+
+Leave the API token on the default Cloudflare-generated Builds token. Runtime secrets stay on **Settings → Variables and Secrets**, not in GitHub.
+
+First-time KV (already done for merimeesoftware):
 
 ```bash
-npm install
 npx wrangler kv namespace create sleeper-mcp-cache
 ```
 
-Put the returned id in `wrangler.toml` under `kv_namespaces[0].id` (this repo already has the merimeesoftware `sleeper-mcp-cache` namespace).
+Put the returned id in `wrangler.toml` under `kv_namespaces[0].id`.
 
 Optional defaults (or pass IDs on every tool call):
 
@@ -48,11 +64,11 @@ npx wrangler secret put SLEEPER_LEAGUE_ID
 
 League ID is the number in `https://sleeper.com/leagues/<id>/...`.
 
+Manual deploy from a logged-in machine:
+
 ```bash
 npm run deploy
 ```
-
-Pushes to `main` also deploy via GitHub Actions when `CLOUDFLARE_API_TOKEN` is set on the repo (optional `CLOUDFLARE_ACCOUNT_ID`).
 
 MCP URL:
 

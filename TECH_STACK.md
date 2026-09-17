@@ -42,8 +42,8 @@ N/A — data plane only.
 
 ## 7. CI/CD
 
-- GitHub Actions: `ci.yml` typechecks on PRs; deploys the Worker on push to `main` (`CLOUDFLARE_API_TOKEN`, optional `CLOUDFLARE_ACCOUNT_ID`)
-- Manual: `npm run deploy`
+- GitHub Actions: `ci.yml` typechecks only
+- Deploy: Cloudflare Workers Builds (GitHub `main` → `npx wrangler deploy`). Same as porkbun-mcp. No GitHub API token.
 
 ## 8. MCP servers & skills in use
 
@@ -65,5 +65,5 @@ wrangler.toml     Worker + KV binding
 
 | Area | Current | Target | Priority to fix |
 |------|---------|--------|-----------------|
-| CI | Actions wrangler deploy on `main` | same | none |
+| CI | Workers Builds on `main` | same | none |
 | Custom domain | workers.dev | optional later | none |
