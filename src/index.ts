@@ -29,7 +29,7 @@ function leagueIdOf(env: Env, override?: string | null) {
 function createServer(env: Env) {
   const server = new McpServer({
     name: "sleeper-mcp",
-    version: "0.1.0",
+    version: "0.1.1",
   });
 
   server.tool(
@@ -181,8 +181,8 @@ function createServer(env: Env) {
       const counts = rosters.map((r) => {
         const owner = r.owner_id ? owners.get(r.owner_id) : undefined;
         const byPos: Record<string, string[]> = {};
-        for (const id of r.players || []) {
-          const p = map[id];
+        for (const pid of r.players || []) {
+          const p = map[pid];
           const pos = p?.position || "UNK";
           byPos[pos] ||= [];
           byPos[pos].push(playerName(p));
@@ -201,16 +201,45 @@ function createServer(env: Env) {
   return server;
 }
 
+const cors = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
+  "Access-Control-Allow-Headers":
+    "Content-Type, Accept, Authorization, mcp-session-id, MCP-Protocol-Version",
+  "Access-Control-Expose-Headers": "mcp-session-id",
+};
+
 export default {
   fetch(request: Request, env: Env, ctx: ExecutionContext) {
     const url = new URL(request.url);
+
+    if (request.method === "OPTIONS") {
+      return new Response(null, { status: 204, headers: cors });
+    }
+
     if (url.pathname === "/" || url.pathname === "/health") {
-      return Response.json({
-        name: "sleeper-mcp",
-        mcp: "/mcp",
-        docs: "https://github.com/merimeesoftware/sleeper-mcp",
+      return Response.json(
+        {
+          name: "sleeper-mcp",
+          mcp: "/mcp",
+          transport: "streamable-http",
+          docs: "https://github.com/merimeesoftware/sleeper-mcp",
+        },
+        { headers: cors },
+      );
+    }
+
+    if (url.pathname === "/mcp" && request.method === "GET") {
+      return new Response("Method Not Allowed. Use POST for Streamable HTTP.", {
+        status: 405,
+        headers: {
+          ...cors,
+          Allow: "POST, DELETE, OPTIONS",
+          "Content-Type": "text/plain",
+        },
       });
     }
+
     const server = createServer(env);
     return createMcpHandler(server)(request, env, ctx);
   },
