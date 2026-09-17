@@ -3,6 +3,7 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -11,5 +12,41 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - run: npm install
+          cache: npm
+      - run: npm ci
       - run: npx tsc --noEmit
+
+  deploy:
+    needs: check
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - name: Deploy Worker
+        run: npx wrangler deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - name: Probe GET /mcp returns 405
+        run: |
+          set -euo pipefail
+          url="https://sleeper-mcp.merimeesoftware.workers.dev/mcp"
+          code=""
+          for i in 1 2 3 4 5; do
+            code=$(curl -sS -o /tmp/mcp-get-body -D /tmp/mcp-get-headers -w "%{http_code}" --max-time 5 \
+              -H "Accept: text/event-stream" "$url" || true)
+            echo "attempt $i: GET /mcp -> ${code:-timeout}"
+            cat /tmp/mcp-get-headers || true
+            if [ "$code" = "405" ]; then
+              grep -qi "^Allow:.*POST" /tmp/mcp-get-headers
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "expected 405, got ${code:-timeout}"
+          exit 1

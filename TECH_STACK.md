@@ -42,7 +42,8 @@ N/A — data plane only.
 
 ## 7. CI/CD
 
-- GitHub Actions: none yet (deploy is `wrangler deploy` from the owner)
+- GitHub Actions: `ci.yml` typechecks on PRs; deploys the Worker on push to `main` (`CLOUDFLARE_API_TOKEN`, optional `CLOUDFLARE_ACCOUNT_ID`)
+- Manual: `npm run deploy`
 
 ## 8. MCP servers & skills in use
 
@@ -64,5 +65,5 @@ wrangler.toml     Worker + KV binding
 
 | Area | Current | Target | Priority to fix |
 |------|---------|--------|-----------------|
-| CI | none | Actions wrangler deploy | low |
+| CI | Actions wrangler deploy on `main` | same | none |
 | Custom domain | workers.dev | optional later | none |
