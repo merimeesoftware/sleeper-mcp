@@ -12,6 +12,7 @@ import {
   getTransactions,
   getUser,
   getUserLeagues,
+  isWaiverEligible,
   playerName,
   resolveIds,
 } from "./sleeper";
@@ -100,7 +101,7 @@ function createServer(env: Env) {
 
   server.tool(
     "get_free_agents",
-    "Players not on any roster in the league. Filter by position. This is the only valid waiver list.",
+    "Players not on any roster in the league who currently have an NFL team. Filter by position. This is the only valid waiver list. Retired and unsigned names are excluded even if Sleeper left them Active with a stale search_rank.",
     {
       league_id: z.string().optional(),
       position: z.string().optional(),
@@ -120,13 +121,12 @@ function createServer(env: Env) {
       const agents = Object.values(map)
         .filter((p) => {
           if (!p || owned.has(p.player_id)) return false;
-          if (p.active === false) return false;
-          if (p.status && p.status !== "Active") return false;
+          if (!isWaiverEligible(p)) return false;
           if (pos) {
             const positions = (p.fantasy_positions || [p.position]).filter(Boolean);
             if (!positions.includes(pos)) return false;
           }
-          return Boolean(p.team || p.position);
+          return true;
         })
         .sort((a, b) => (a.search_rank || 9999) - (b.search_rank || 9999))
         .slice(0, max)

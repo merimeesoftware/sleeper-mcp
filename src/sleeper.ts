@@ -54,6 +54,15 @@ export function playerName(p?: SleeperPlayer | null): string {
   return [p.first_name, p.last_name].filter(Boolean).join(" ") || p.player_id;
 }
 
+/** Waiver-eligible: on an NFL roster. Sleeper leaves retired names Active with a stale search_rank. */
+export function isWaiverEligible(p?: SleeperPlayer | null): boolean {
+  if (!p) return false;
+  if (p.active === false) return false;
+  if (p.status && p.status !== "Active") return false;
+  if (!p.team) return false;
+  return Boolean(p.position || p.fantasy_positions?.length);
+}
+
 export async function getNflState() {
   return getJson<{ week: number; season: string; season_type: string; display_week: number }>(
     "/state/nfl",

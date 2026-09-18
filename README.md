@@ -15,7 +15,7 @@ Most Sleeper MCPs are local `npx` / stdio. Grok connectors and most remote harne
 https://sleeper-mcp.<your-account>.workers.dev/mcp
 ```
 
-Free agents are computed here (NFL player map minus every rostered ID). Do not recommend a player unless `get_free_agents` returns them.
+Free agents are computed here (NFL player map minus every rostered ID, and only players with a current NFL team). Do not recommend a player unless `get_free_agents` returns them.
 
 ## Tools
 
